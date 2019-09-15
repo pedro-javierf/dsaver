@@ -22,20 +22,19 @@ U8G2_SSD1306_128X32_UNIVISION_F_HW_I2C u8g2(U8G2_R0);
 bool mode;
 bool done = false;
 bool oled = true;
+
 byte eeprom_output_data;
 byte eeprom_input_data=0;
 byte clr;
-uint64_t address=(uint64_t)0;
-byte mempage[64];
-bool write_complete = false;
-uint64_t page_counter = (uint64_t)0; //also serves as an address variable for the memory page
+byte mempage[32];
 
+uint64_t address=(uint64_t)0;
+uint64_t page_counter = (uint64_t)0; //also serves as an address variable for the memory page
+bool write_complete = false;
 
 //////////////////////////////////////////OLED////////////////////////////////////
 void update_lcd_percent(uint64_t num)
 {
-  if(num>=0 && num<=10000)
-  {
     u8g2.clearBuffer();          // clear the internal memory
     u8g2.setFont(u8g2_font_logisoso28_tr);  // choose a suitable font at https://github.com/olikraus/u8g2/wiki/fntlistall
 
@@ -44,7 +43,6 @@ void update_lcd_percent(uint64_t num)
   
     u8g2.drawStr(8,29,str);  // write something to the internal memory
     u8g2.sendBuffer();         // transfer internal memory to the display
-  }
 }
 
 void update_lcd_text(char *txt)
@@ -121,21 +119,25 @@ void write_enable()
   //Assert Slave
   digitalWrite(SLAVESELECT,LOW);
   spi_transfer(WREN); //transmit read enable opcode
+  delay(1);
   releaseChip();
 }
 
-inline void write_eeprom(byte (&page)[64], int EEPROM_address) //arduino int -> 16 bits
+inline void write_eeprom(byte (&page)[32], int EEPROM_address) //arduino int -> 16 bits
 {
+  //Assert Slave
+  digitalWrite(SLAVESELECT,LOW);
+  
   //WRITE EEPROM
-  spi_transfer(WRITE);                       //transmit read opcode
+  spi_transfer(WRITE);                       //transmit write opcode
   spi_transfer((char)(EEPROM_address>>8));   //send MSByte address first
   spi_transfer((char)(EEPROM_address));      //send LSByte address
 
-  for(int x = 0; x < 64; x++)
+  for(int x = 0; x < 32; x++)
   {
     spi_transfer(page[x]); //send byte
-    delay(100); //delay 0.1s to give time the eeprom to write  
-}
+    //delay(1); //delay 0.001s to give time the eeprom to write  
+  }
   releaseChip(); 
 }
 
@@ -212,9 +214,9 @@ void setup() {
  else
  {
       u8g2.clearBuffer();          // clear the internal memory
-      u8g2.setFont(u8g2_font_logisoso28_tr);  // choose a suitable font at https://github.com/olikraus/u8g2/wiki/fntlistall
-      u8g2.drawStr(8,29,"INJECT");  // write something to the internal memory
-      u8g2.sendBuffer();         // transfer internal memory to the display 
+      //u8g2.setFont(u8g2_font_logisoso28_tr);  // choose a suitable font at https://github.com/olikraus/u8g2/wiki/fntlistall
+      //u8g2.drawStr(8,29,"INJECT");  // write something to the internal memory
+      //u8g2.sendBuffer();         // transfer internal memory to the display 
   }
 }
 
@@ -266,9 +268,13 @@ void loop() {
 
       if(!write_complete)
       {
-        update_lcd_percent(page_counter);
+        if(oled)
+          {update_lcd_percent(page_counter);}
+          
         //receive page data from PC
         while (Serial.available()<32){} // Wait 'till there are 32 Bytes waiting
+        //optimize this with serial.read(32) ???
+        
         for(int n=0; n<32; n++){
           mempage[n] = Serial.read(); // Then: Get them.
         }
@@ -278,7 +284,7 @@ void loop() {
   
         //write page
         //ENSURE THIS CALL IS CORRECT
-        write_eeprom(mempage,(page_counter*(uint64_t)64));
+        write_eeprom(mempage,(page_counter*(uint64_t)32));
         page_counter++;
         
       }
@@ -288,8 +294,5 @@ void loop() {
         update_lcd_text("DONE.");
         while(1);
       }
-      
-
-      
   }
 }
