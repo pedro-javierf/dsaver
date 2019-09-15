@@ -86,17 +86,17 @@ elif(opt==2):
     with open(str(filename), "rb") as savegame:
         ser.write(b'\x49') #inject command
         
-        #send frames of 128 bytes each
+        #send frames of 32 bytes each
         
         while(not(done)):
-            mem_page = savegame.read(64) #read 128 bytes
-            print(mem_page)
-            print()
-            ser.write(mem_page)
+            mem_page = savegame.read(32) #read 32 bytes from file
+            #print(mem_page)
+            #print()
+            ser.write(mem_page) #send 32 bytes to arduino
             counter += 1
-            if(counter==1024):
+            if(counter==2048):
                 done = True
-            time.sleep(0.08)
+            time.sleep(0.1)
             print(counter)
         
     print("[>] Done")
