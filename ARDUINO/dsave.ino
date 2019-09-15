@@ -134,8 +134,9 @@ inline void write_eeprom(byte (&page)[64], int EEPROM_address) //arduino int -> 
   for(int x = 0; x < 64; x++)
   {
     spi_transfer(page[x]); //send byte
-  }
-  releaseChip();
+    delay(100); //delay 0.1s to give time the eeprom to write  
+}
+  releaseChip(); 
 }
 
 
@@ -255,17 +256,20 @@ void loop() {
   EEPROM   8K bytes   32 bytes  ST M95640-W       (eg. Super Mario DS)
   EEPROM  64K bytes  128 bytes  ST M95512-W       (eg. Downhill Jam)
   */
+
+  //use a 32byte page size to overcome arduino's 63kb UART ring
+
   else //inject savegame
   { 
-      if(page_counter==(uint64_t)1024)
+      if(page_counter==(uint64_t)2048)
       {write_complete = true;}
 
       if(!write_complete)
       {
         update_lcd_percent(page_counter);
         //receive page data from PC
-        while (Serial.available()<63){} // Wait 'till there are 64 Bytes waiting
-        for(int n=0; n<64; n++){
+        while (Serial.available()<32){} // Wait 'till there are 32 Bytes waiting
+        for(int n=0; n<32; n++){
           mempage[n] = Serial.read(); // Then: Get them.
         }
         
@@ -273,6 +277,7 @@ void loop() {
         write_enable();
   
         //write page
+        //ENSURE THIS CALL IS CORRECT
         write_eeprom(mempage,(page_counter*(uint64_t)64));
         page_counter++;
         
