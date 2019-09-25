@@ -13,16 +13,29 @@ to build a _dsaver_ device compatible with the code provided in the ARDUINO fold
 
 ## Wiring
 
+| Arduino       | Slot 1        | Description   |
+| ------------- | ------------- | ------------- |
+| PIN 13 (ICSP) | 2             | CLK           |
+| PIN 10 (ICSP) | 6             | CS (or SS)    |
+| Any VCC 3.3v  | 8             | VCC 3.3v      |
+| PIN 11 MOSI   | 15 (MISO)     | ***           |
+| PIN 12 MISO   | 16 (MOSI)     | ***           |
+| Any GND       | 17            | GND           |
+
+- Arduino PIN 11 is MOSI and should be connected to pin 15 of the slot1 (MISO)
+- Arduino PIN 12 is MISO and should be connected to pin 15 of the slot1 (MOSI)
+
+If you don't understand why it is this way check the [SPI Protocol](https://es.wikipedia.org/wiki/Serial_Peripheral_Interface) or the [dsaver writeup](pedro-javierf.github.io)
+
 ## software
 Provided in this repository you will find all software required to build a _dsaver_ device:
-- [ ] ARDUINO   : .ino C code to be flashed on the board
-- [ ] dsaver.py : python3 data receiver for the PC side
+- [x] ARDUINO   : C code to be flashed on the board. `.ino` `.h` and `.cpp` files.
+- [x] PC        : File `dsaver.py` contains python3 data receiver for the PC side.
 
 ### Requeriments
-dsaver.py requires PySerial
+dsaver.py requires PySerial:
+- pip3 install pyserial
 
-pip3 install pyserial
-
-dsaver.ino requires
-  #include <U8g2lib.h>
-  #include <U8x8lib.h>
+dsaver.ino requires U8g2lib and U8x8lib for OLED support
+-  #include <U8g2lib.h>
+-  #include <U8x8lib.h>
