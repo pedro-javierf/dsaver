@@ -1,6 +1,8 @@
 # dsaver
 Arduino based Nintendo DS savegame hardware tool
 
+<img src="https://github.com/pedro-javierf/dsaver/raw/master/dsaverHW.jpg" width="250" height="300" />
+
 ## Description
 _dsaver_ is a hardware solution to dump and modify Nintendo DS cartridges savegames. It is based on the popular and extended Arduino board; it works perfectly on clone and unofficial boards.
 
@@ -25,7 +27,7 @@ to build a _dsaver_ device compatible with the code provided in the ARDUINO fold
 - Arduino PIN 11 is MOSI and should be connected to pin 15 of the slot1 (MISO)
 - Arduino PIN 12 is MISO and should be connected to pin 15 of the slot1 (MOSI)
 
-If you don't understand why it is this way check the [SPI Protocol](https://es.wikipedia.org/wiki/Serial_Peripheral_Interface) or the [dsaver writeup](pedro-javierf.github.io)
+If you don't understand why it is this way check the [SPI Protocol](https://es.wikipedia.org/wiki/Serial_Peripheral_Interface) or the [dsaver writeup](https://pedro-javierf.github.io)
 
 ## software
 Provided in this repository you will find all software required to build a _dsaver_ device:
