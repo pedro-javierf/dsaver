@@ -34,10 +34,14 @@ Provided in this repository you will find all software required to build a _dsav
 - [x] ARDUINO   : C code to be flashed on the board. `.ino` `.h` and `.cpp` files.
 - [x] PC        : File `dsaver.py` contains python3 data receiver for the PC side.
 
-### Requeriments
+## Requeriments
 dsaver.py requires PySerial:
 - pip3 install pyserial
 
 dsaver.ino requires U8g2lib and U8x8lib for OLED support
 -  #include <U8g2lib.h>
 -  #include <U8x8lib.h>
+
+## Known Issues
+- [ ] Not really an issue, but actually dsaver has only been tested with 64kb carts
+- [ ] Due to the different clock domains (SPI: 4MHz / UART: 115200 b/s) dsaver uses the OLED writing procedures to balance processor usage. This balancing has a very low rate of fail, and sometimes one (1) byte of data at the end of the file could be lost.
