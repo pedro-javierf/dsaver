@@ -84,7 +84,7 @@ def main():
                 time.sleep(0.1)
                 print(counter)
 
-        print("[>] Finit")
+        print("[>] Fini")
         #file is closed on with-open block exit
 
     
