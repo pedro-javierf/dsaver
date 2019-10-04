@@ -14,11 +14,11 @@ done     = False
 
 def main():
     print("dsaver " + ver)
-    print("(Traduction française par MaxwellDoug)")
-    print("Port d'entrée série: ", end= '')
+    print()
+    print("Input Serial Port: ", end= '')
     port = input()
 
-    print("[>] En attente du périphérique dsaver",end='',flush=True)
+    print("[>] Waiting for dsaver device",end='',flush=True)
     while(not(device_detected)):
         try:
             ser = serial.Serial(port, baudrate, timeout=5) #5 sec timeout
@@ -30,19 +30,19 @@ def main():
 
     tmp = ser.read(8)
     if(tmp==b'dsaver\r\n'):
-        print("[>] périphérique dsaver trouve. ")
+        print("[>] dsaver device detected. ")
     else:
-        print("[!] périphérique inconnu détecté. Sortant")
+        print("[!] unkwnown device detected. Exiting")
         sys.exit(1)
 
     #selection menu DUMP / INJECT
     opt = -1
     while(opt<0 or opt>2):
         print()
-        print("Choisis un action:")
-        print("1. Extraire sauvegarde")
-        print("2. Enregistrer  sauvegarde")
-        print("0. Sortir")
+        print("Choose an option:")
+        print("1. Dump   Savegame")
+        print("2. Inject Savegame")
+        print("0. Exit")
         print("> ",end='')
         try:
             opt = int(input())
@@ -50,7 +50,7 @@ def main():
             time.sleep(0.1)
 
     if(opt==1):
-        print("Nom de fichier d'entrée / sortie: ", end='')
+        print("Input output filename: ", end='')
         filename=input()
         with open(str(filename), "wb") as savegame:
             time.sleep(0.5)
@@ -66,8 +66,8 @@ def main():
                     # Write byte to the file
                     savegame.write(x)
                 except:
-                    print("[!] L'appareil s'est déconnecté")
-                    print("compteur: "+str(counter))
+                    print("[!] The device has disconnected")
+                    print("counter: "+str(counter))
                     done = True
 
                 #debug
@@ -76,11 +76,11 @@ def main():
                     print('.',end='',flush=True)
                 if(counter==65536):
                     done = True
-                    print("\n[>] Extraction Success.",flush=True)
+                    print("\n[>] Succesful dump.",flush=True)
 
 
     elif(opt==2):
-        print("Nom de fichier d'entrée: ", end='')
+        print("Input filename: ", end='')
         filename=input()
         with open(str(filename), "rb") as savegame:
             ser.write(b'\x49') #inject command
@@ -98,7 +98,7 @@ def main():
                 time.sleep(0.1)
                 print(counter)
 
-        print("[>] Fini")
+        print("[>] Done")
         #file is closed on with-open block exit
 
     
