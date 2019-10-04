@@ -14,11 +14,11 @@ done     = False
 
 def main():
     print("dsaver " + ver)
-    print()
-    print("Input Serial Port: ", end= '')
+    print("(Íslensk þýðing eftir: Elías Andri)")
+    print("Inngangs raðgátt: ", end= '')
     port = input()
 
-    print("[>] Waiting for dsaver device",end='',flush=True)
+    print("[>] Bíð eftir dsaver tæki",end='',flush=True)
     while(not(device_detected)):
         try:
             ser = serial.Serial(port, baudrate, timeout=5) #5 sec timeout
@@ -30,19 +30,19 @@ def main():
 
     tmp = ser.read(8)
     if(tmp==b'dsaver\r\n'):
-        print("[>] dsaver device detected. ")
+        print("[>] dsaver tæki fundið. ")
     else:
-        print("[!] unkwnown device detected. Exiting")
+        print("[!] Óþekkt tæki fundið. Hættir")
         sys.exit(1)
 
     #selection menu DUMP / INJECT
     opt = -1
     while(opt<0 or opt>2):
         print()
-        print("Choose an option:")
-        print("1. Dump   Savegame")
-        print("2. Inject Savegame")
-        print("0. Exit")
+        print("Veldu valkost:")
+        print("1. Henda Vistuðum Leik ")
+        print("2. Láttu inn Vistaðan Leik ")
+        print("0. Hætta")
         print("> ",end='')
         try:
             opt = int(input())
@@ -50,7 +50,7 @@ def main():
             time.sleep(0.1)
 
     if(opt==1):
-        print("Input output filename: ", end='')
+        print("Inntak úttak skráarnafn: ", end='')
         filename=input()
         with open(str(filename), "wb") as savegame:
             time.sleep(0.5)
@@ -66,7 +66,7 @@ def main():
                     # Write byte to the file
                     savegame.write(x)
                 except:
-                    print("[!] The device has disconnected")
+                    print("[!] Tækið hefur aftengts")
                     print("counter: "+str(counter))
                     done = True
 
@@ -76,11 +76,11 @@ def main():
                     print('.',end='',flush=True)
                 if(counter==65536):
                     done = True
-                    print("\n[>] Succesful dump.",flush=True)
+                    print("\n[>] Hent var kóða á réttan hátt",flush=True)
 
 
     elif(opt==2):
-        print("Input filename: ", end='')
+        print("Sláðu inn skráarnafn: ", end='')
         filename=input()
         with open(str(filename), "rb") as savegame:
             ser.write(b'\x49') #inject command
@@ -98,7 +98,7 @@ def main():
                 time.sleep(0.1)
                 print(counter)
 
-        print("[>] Done")
+        print("[>] Búið")
         #file is closed on with-open block exit
 
     
