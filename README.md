@@ -8,10 +8,10 @@ _dsaver_ is a hardware solution to dump and modify Nintendo DS cartridges savega
 
 ## Hardware required
 to build a _dsaver_ device compatible with the code provided in the ARDUINO folder you will need:
-- [ ] Arduino board, official or clone (ie: freaduino)
-- [ ] Nintendo DS slot 1 header
-- [ ] Jumper Wires
-- [ ] (optional)(recommennded) i2c oled display
+* Arduino board, official or clone (ie: freaduino)
+* Nintendo DS slot 1 header
+* Jumper Wires
+* (optional)(recommennded) i2c oled display
 
 ## Wiring
 
@@ -44,4 +44,4 @@ dsaver.ino requires U8g2lib and U8x8lib for OLED support
 
 ## Known Issues
 - [ ] Not really an issue, but actually dsaver has only been tested with 64kb carts
-- [ ] Due to the different clock domains (SPI: 4MHz / UART: 115200 b/s) dsaver uses the OLED writing procedures to balance processor usage. This balancing has a very low rate of fail, and sometimes one (1) byte of data at the end of the file could be lost.
+- [ ] Due to the different clock domains (SPI: 4MHz / UART: 115200 b/s) dsaver uses the OLED writing procedures to balance processor usage. This balancing has a very low rate of failure, but sometimes one (1) byte of data at the end of the file could be lost.
